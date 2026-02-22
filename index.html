@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BİZİM EVRENİMİZ 🫶</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* REKLAM GİZLEME - EN ÜSTTE VE SERT */
+        #tiiny-host-badge, .tiiny-host-footer, iframe[id*="tiiny"], div[style*="z-index: 9999999"] { 
+            display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; height: 0 !important;
+        }
+
+        :root { --pink: #ff4d6d; --dark: #590d22; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background: #fff1f2; color: var(--dark); text-align: center; overflow-x: hidden; }
+
+        /* TEST */
+        #quiz-container { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 20px; }
+        .quiz-card { background: white; padding: 25px; border-radius: 30px; border: 2px solid var(--pink); }
+        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #eee; border-radius: 15px; background: white; font-weight: 700; cursor: pointer; }
+        .option-btn.correct { background: #d1fae5; border-color: #10b981; }
+
+        /* ANA İÇERİK */
+        #main-content { display: none; padding: 15px; }
+        .box { background: rgba(255,255,255,0.8); padding: 20px; margin: 15px 0; border-radius: 25px; border: 1px solid var(--pink); }
+        .time-val { font-size: 1.6rem; font-weight: 900; color: var(--pink); }
+
+        /* KAZI KAZAN */
+        .scratch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 400px; margin: 0 auto; }
+        .scratch-box { position: relative; aspect-ratio: 1; border-radius: 15px; overflow: hidden; background: #ccc; }
+        .scratch-box img { width: 100%; height: 100%; object-fit: cover; }
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; }
+
+        /* GÖKYÜZÜ */
+        #sky { position: relative; width: 100%; height: 400px; margin-top: 20px; overflow: hidden; background: rgba(255,255,255,0.3); border-radius: 20px; border-top: 2px dashed var(--pink); }
+        .balloon { position: absolute; bottom: -50px; font-size: 40px; cursor: pointer; animation: floatUp var(--spd) linear forwards; }
+        @keyframes floatUp { to { transform: translateY(-600px) translateX(30px); } }
+
+        /* MESAJ POPUP */
+        #pop-msg { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            background: white; padding: 25px; border-radius: 25px; border: 4px solid var(--pink); 
+            z-index: 10000; display: none; width: 85%; max-width: 350px; font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <h1 style="font-family:'Dancing Script'; color: var(--pink);">Ruh Eşi Testi ✨</h1>
+        <div class="quiz-card">
+            <h3 id="q-text">Yükleniyor...</h3>
+            <div id="opt-container"></div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <h1 style="font-family:'Dancing Script'; font-size: 2.2rem;">Dünyalarrr Güzelime🫶</h1>
+        
+        <div class="box">
+            <div style="display: flex; justify-content: space-around;">
+                <div><span class="time-val" id="d">-</span><br><small>GÜN</small></div>
+                <div><span class="time-val" id="h">-</span><br><small>SAAT</small></div>
+                <div><span class="time-val" id="m">-</span><br><small>DAK.</small></div>
+                <div><span class="time-val" id="s">-</span><br><small>SAN.</small></div>
+            </div>
+        </div>
+
+        <h3 style="color: var(--pink);">Anılarımızı Kazı ✨</h3>
+        <div class="scratch-grid" id="scratch-grid"></div>
+
+        <div class="box">
+            <div id="comp-text" style="font-weight: 800; min-height: 40px; display:flex; align-items:center; justify-content:center;">Sana bir mesajım var... ✨</div>
+            <button onclick="showComp()" style="background:var(--pink); color:white; border:none; padding:15px; border-radius:15px; font-weight:900; width: 100%; margin-top:10px;">İLTİFAT PATLAT! ❤️</button>
+        </div>
+
+        <h3 style="color: var(--pink);">Dilek Gökyüzü (Hakkın: <span id="rights">8</span>)</h3>
+        <div id="sky"></div>
+    </div>
+
+    <div id="pop-msg"></div>
+
+    <script>
+        const questions = [
+            { q: "Sence dünya üzerindeki oksijen miktarını asıl belirleyen nedir?", a: ["Ormanlar", "Planktonlar", "Senin nefes alışın; dünya sen nefes aldıkça dönüyor", "Atmosferik basınç"], c: 2 },
+            { q: "Senin güzelliğini matematiksel bir işleme döksek sonuç ne olurdu?", a: ["Sonsuz", "Tanımsız", "Hata (Sistem bu kadar güzelliği kaldıramaz)", "Sadece 'Sen'"], c: 2 },
+            { q: "Sence senin en çok hangi özelliğin beni benden alıyor?", a: ["Bakışların", "Sesin", "Kalbinin saflığı", "Sadece 'sen' olman bile yetiyor"], c: 3 },
+            { q: "Karanlık bir labirentte olsak, yolumuzu neye göre bulurduk?", a: ["Yıldızlara göre", "Hislerimin gücüne göre", "Sesinin yankılandığı yöne göre; tek çıkış sensin", "El ele tutuşarak"], c: 2 },
+            { q: "Seni tek bir kelimeyle dünyaya anlatmam gerekse?", a: ["Zarafet", "Işık", "Yuva", "Dünyaalarrr Güzelim"], c: 3 },
+            { q: "Telefonumdaki en özel dosya hangisi?", a: ["Fotoğrafların", "Mesajların", "Haberin yokken çektiğim en doğal halin", "Hepsi"], c: 2 }
+        ];
+
+        let curQ = 0;
+        function loadQ() {
+            const q = questions[curQ];
+            document.getElementById('q-text').innerText = q.q;
+            const cont = document.getElementById('opt-container');
+            cont.innerHTML = "";
+            q.a.forEach((opt, i) => {
+                const b = document.createElement('button');
+                b.className = 'option-btn'; b.innerText = opt;
+                b.onclick = () => {
+                    if(i === q.c) {
+                        b.classList.add('correct');
+                        setTimeout(() => { curQ++; curQ < questions.length ? loadQ() : showMain(); }, 500);
+                    } else { alert("Yanlış cevap güzelim, bir daha dene!"); }
+                };
+                cont.appendChild(b);
+            });
+        }
+
+        function showMain() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            initScratch(); startBalloons();
+        }
+
+        setInterval(() => {
+            const diff = new Date() - new Date('2024-09-16T00:00:00');
+            document.getElementById('d').innerText = Math.floor(diff/864e5);
+            document.getElementById('h').innerText = Math.floor((diff/36e5)%24);
+            document.getElementById('m').innerText = Math.floor((diff/6e4)%60);
+            document.getElementById('s').innerText = Math.floor((diff/1e3)%60);
+        }, 1000);
+
+        function initScratch() {
+            const imgs = ['o1.jpg', 'o2.jpg', 'o3.jpg', 'ben1.jpg', 'ben2.jpg', 'ben3.jpg'];
+            const grid = document.getElementById('scratch-grid');
+            grid.innerHTML = "";
+            imgs.forEach(src => {
+                const box = document.createElement('div'); box.className = 'scratch-box';
+                const img = document.createElement('img'); img.src = src;
+                const cvs = document.createElement('canvas');
+                box.append(img, cvs); grid.append(box);
+                const ctx = cvs.getContext('2d');
+                setTimeout(() => {
+                    cvs.width = box.clientWidth; cvs.height = box.clientHeight;
+                    ctx.fillStyle = '#b0b0b0'; ctx.fillRect(0,0,cvs.width,cvs.height);
+                }, 300);
+                const draw = (e) => {
+                    const r = cvs.getBoundingClientRect();
+                    const x = (e.clientX || e.touches[0].clientX) - r.left;
+                    const y = (e.clientY || e.touches[0].clientY) - r.top;
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.beginPath(); ctx.arc(x,y,25,0,Math.PI*2); ctx.fill();
+                };
+                cvs.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, {passive:false});
+            });
+        }
+
+        // SENİN İLTİFATLARIN (SABİTLEDİM)
+        const myComps = [
+            "seni çooookk seviyorummm", 
+            "Ponçiğimmmm", 
+            "Tatluşummm", 
+            "Dünyaalarrrr güzelimmm", 
+            "Hayatımınn anlamııı", 
+            "Mucizemmm", 
+            "Canımın içiiiii"
+        ];
+        let compPool = [];
+        function showComp() {
+            if(compPool.length === 0) compPool = [...myComps].sort(() => Math.random() - 0.5);
+            const txt = compPool.pop();
+            const el = document.getElementById('comp-text');
+            el.innerHTML = ""; let i = 0;
+            function type() { if(i < txt.length) { el.innerHTML += txt.charAt(i++); setTimeout(type, 50); } }
+            type();
+        }
+
+        // SENİN DİLEK NOTLARIN (SABİTLEDİM)
+        const myNotes = [
+            "Gülüşün için patladı! ✨",
+            "Güzelliğin dünyadan değil 😍",
+            "Hep mutlu ol 🫠",
+            "İyi ki varsın ❤️",
+            "Mucizem 💖",
+            "En güzel manzaram 🥰",
+            "Hep beraber olalımmm 🫶",
+            "Seni sevmek en güzeli ❤️‍🔥"
+        ];
+
+        let pops = 0;
+        function startBalloons() { setInterval(() => { if(pops < 8) createBalloon(); }, 2000); }
+        function createBalloon() {
+            const b = document.createElement('div'); b.className = 'balloon';
+            b.innerText = "🎈"; b.style.left = Math.random() * 80 + 5 + "%";
+            b.style.setProperty('--spd', 6 + Math.random() * 4 + "s");
+            b.onclick = () => {
+                if(pops >= 8) return;
+                const p = document.getElementById('pop-msg');
+                p.style.display = 'block'; p.innerHTML = "";
+                let i = 0; const txt = myNotes[pops];
+                function type() {
+                    if(i < txt.length) { p.innerHTML += txt.charAt(i++); setTimeout(type, 50); }
+                    else { setTimeout(() => p.style.display = 'none', 3000); }
+                }
+                type();
+                pops++; b.remove();
+                document.getElementById('rights').innerText = 8 - pops;
+            };
+            document.getElementById('sky').append(b);
+        }
+        loadQ();
+    </script>
+</body>
+</html>
