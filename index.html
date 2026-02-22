@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DÜNYAALARRR GÜZELİMEEE🫶</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root { --pink-dark: #ff4d6d; --glass: rgba(255, 255, 255, 0.4); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background: linear-gradient(180deg, #ffafbd 0%, #ffc3a0 100%); min-height: 100vh; overflow-x: hidden; color: #590d22; text-align: center; }
+
+        #scanner-page { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s ease; }
+        video { width: 85%; max-width: 320px; border-radius: 20px; border: 3px solid var(--pink-dark); transform: scaleX(-1); }
+        #scan-message { color: #fff; font-weight: bold; font-size: 1.3rem; margin-top: 30px; padding: 0 20px; min-height: 80px; }
+        .start-btn { padding: 15px 35px; border-radius: 50px; border: none; background: #00ff00; font-weight: 900; font-size: 1.1rem; margin-bottom: 20px; box-shadow: 0 0 15px #00ff00; }
+
+        #main-content { display: none; opacity: 0; transition: opacity 1s ease; width: 100%; padding-bottom: 50px; }
+        h1 { font-family: 'Dancing Script'; font-size: 2.2rem; margin: 30px 0; }
+
+        .counter-container { background: var(--glass); backdrop-filter: blur(10px); border-radius: 25px; padding: 25px; margin: 20px; border: 1px solid rgba(255,255,255,0.3); }
+        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .time-val { font-size: 1.4rem; font-weight: 900; color: #c9184a; }
+        .time-label { font-size: 0.6rem; font-weight: 700; }
+
+        .scratch-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; max-width: 450px; margin: 0 auto; }
+        .scratch-box { position: relative; aspect-ratio: 1/1; border-radius: 15px; overflow: hidden; background: #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .scratch-box img { width: 100%; height: 100%; object-fit: cover; }
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; }
+
+        .comp-box { margin: 30px 20px; padding: 25px; background: #fff; border-radius: 25px; border: 2px solid var(--pink-dark); }
+        #comp-text { font-size: 1.1rem; font-weight: 800; min-height: 50px; color: #a4133c; margin-bottom: 15px; display: block; }
+        #comp-btn:disabled { background: #ccc !important; cursor: not-allowed; }
+
+        #sky { position: relative; width: 100%; height: 400px; margin-top: 40px; overflow: hidden; border-top: 2px dashed var(--pink-dark); }
+        .balloon { position: absolute; bottom: -100px; width: 55px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; }
+        @keyframes floatUp { 0% { bottom: -100px; transform: translateX(0); } 100% { bottom: 500px; transform: translateX(20px); } }
+        
+        #pop-msg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 25px; border-radius: 20px; border: 3px solid var(--pink-dark); z-index: 10000; display: none; width: 85%; font-weight: 900; box-shadow: 0 0 50px rgba(0,0,0,0.3); }
+        .boom { position: absolute; font-size: 40px; pointer-events: none; animation: explode 0.5s forwards; }
+        @keyframes explode { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+    </style>
+</head>
+<body onclick="spawnEmoji(event)">
+
+    <div id="scanner-page">
+        <video id="video" autoplay playsinline muted></video>
+        <button id="start-btn" class="start-btn" onclick="startScanning()">SİSTEMİ BAŞLAT</button>
+        <div id="scan-message">Güzellik Analizi Bekleniyor...</div>
+    </div>
+
+    <div id="main-content">
+        <h1>DÜNYAALARRR GÜZELİMEEE🫶</h1>
+        <div class="counter-container">
+            <div class="timer-grid">
+                <div><span class="time-val" id="d">-</span><br><span class="time-label">GÜN</span></div>
+                <div><span class="time-val" id="h">-</span><br><span class="time-label">SAAT</span></div>
+                <div><span class="time-val" id="m">-</span><br><span class="time-label">DAK.</span></div>
+                <div><span class="time-val" id="s">-</span><br><span class="time-label">SAN.</span></div>
+            </div>
+            <p style="margin-top:20px; font-weight:600; font-size:0.85rem;">iyi ki seni tanımışım iyi ki seni sevmişim dünyaalarrr güzelimmm benimmm ❤️</p>
+        </div>
+
+        <h3 style="font-weight: 900;">KAZI KAZAN ✨</h3>
+        <div class="scratch-grid" id="scratch-grid"></div>
+
+        <div class="comp-box">
+            <div id="comp-text">Dokun ve Gerçekleri Gör... ✨</div>
+            <button id="comp-btn" onclick="showCompliment()" style="background:var(--pink-dark); color:#fff; border:none; padding:12px 25px; border-radius:20px; font-weight:900; cursor:pointer;">İLTİFAT PATLAT!</button>
+        </div>
+
+        <h3 style="font-weight: 900;">DİLEK GÖKYÜZÜ ✨</h3>
+        <div id="sky"></div>
+    </div>
+
+    <div id="pop-msg"></div>
+
+    <script>
+        const video = document.getElementById('video');
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } }).then(s => video.srcObject = s);
+
+        function typeWriter(text, elementId, keepTime, callback) {
+            let i = 0;
+            const element = (typeof elementId === 'string') ? document.getElementById(elementId) : elementId;
+            element.innerHTML = "";
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, 60);
+                } else {
+                    setTimeout(() => {
+                        if (callback) callback();
+                    }, keepTime);
+                }
+            }
+            type();
+        }
+
+        function startScanning() {
+            document.getElementById('start-btn').style.display = 'none';
+            const msg = document.getElementById('scan-message');
+            msg.innerHTML = "Analiz Ediliyor...";
+            setTimeout(() => {
+                msg.style.color = "#ff4d6d";
+                msg.innerHTML = "DÜNYANINNN ENNN GÜZELLİİİİİ TESPİTTT EDİLDİİİ😍😍😍😍";
+                setTimeout(() => {
+                    document.getElementById('scanner-page').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('scanner-page').style.display = 'none';
+                        document.getElementById('main-content').style.display = 'block';
+                        setTimeout(() => { document.getElementById('main-content').style.opacity = '1'; initScratch(); createBalloons(); }, 50);
+                    }, 1000);
+                }, 4000);
+            }, 2000);
+        }
+
+        setInterval(() => {
+            const diff = new Date() - new Date('2024-09-16T00:00:00');
+            document.getElementById('d').innerText = Math.floor(diff/864e5);
+            document.getElementById('h').innerText = Math.floor((diff/36e5)%24);
+            document.getElementById('m').innerText = Math.floor((diff/6e4)%60);
+            document.getElementById('s').innerText = Math.floor((diff/1e3)%60);
+        }, 1000);
+
+        function initScratch() {
+            // Fotoğraflar her seferinde karışık (shuffle) gelecek
+            const imgs = ['o1.jpg', 'o2.jpg', 'o3.jpg', 'ben1.jpg', 'ben2.jpg', 'ben3.jpg'].sort(() => Math.random() - 0.5);
+            const grid = document.getElementById('scratch-grid');
+            grid.innerHTML = '';
+            imgs.forEach(src => {
+                const box = document.createElement('div'); box.className = 'scratch-box';
+                const img = document.createElement('img'); img.src = src;
+                const cvs = document.createElement('canvas');
+                box.append(img, cvs); grid.append(box);
+                const ctx = cvs.getContext('2d');
+                setTimeout(() => {
+                    cvs.width = box.clientWidth; cvs.height = box.clientHeight;
+                    ctx.fillStyle = '#c0c0c0'; ctx.fillRect(0,0,cvs.width,cvs.height);
+                }, 400);
+                const scr = (e) => {
+                    const r = cvs.getBoundingClientRect();
+                    const x = (e.clientX || (e.touches && e.touches[0].clientX)) - r.left;
+                    const y = (e.clientY || (e.touches && e.touches[0].clientY)) - r.top;
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.beginPath(); ctx.arc(x,y,25,0,6.28); ctx.fill();
+                };
+                cvs.addEventListener('touchmove', (e) => { e.preventDefault(); scr(e); }, {passive:false});
+                cvs.addEventListener('mousemove', (e) => e.buttons === 1 && scr(e));
+            });
+        }
+
+        let comps = ["seni çooookk seviyorummm güzelimmm", "Ponçiğimmmm", "Tatluşummm", "Dünyaalarrrr güzelimmm benimmmm", "Gönlümünn sultanııı", "Hayatımınn anlamııı", "Mucizemmm", "canımınnn içiiiii"];
+        function showCompliment() {
+            const btn = document.getElementById('comp-btn');
+            btn.disabled = true;
+            btn.innerText = "Yazılıyor...";
+            const randomComp = comps[Math.floor(Math.random() * comps.length)];
+            typeWriter(randomComp, 'comp-text', 1000, () => {
+                btn.disabled = false;
+                btn.innerText = "İLTİFAT PATLAT!";
+            });
+        }
+
+        const notes = [
+            "Bu balon senin o eşsiz gülüşün için patladı! ✨",
+            "Güzelliğin bu dünyaya ait değil güzelimmmm 😍",
+            "Hep mutlu ol güzelimmm benimmm 🫠",
+            "İyi ki karşıma çıkmışsın, iyi ki hayatımdasın. ❤️",
+            "Seninle geçen her saniye benim için bir mucize. 💖",
+            "En sevdiğim manzara senin o gülüşün. 🥰",
+            "Hep birlikte olalımmm güzelimmm benimmmm🫶🫶🫶",
+            "Seni sevmek dünyanın en güzel işi. ❤️‍🔥"
+        ];
+
+        function createBalloons() {
+            const sky = document.getElementById('sky');
+            for(let i=0; i<8; i++) {
+                setTimeout(() => {
+                    const b = document.createElement('div'); b.className = 'balloon';
+                    b.innerText = "🎈"; b.style.left = (5 + (i * 11)) + '%';
+                    b.style.animation = `floatUp ${7 + Math.random()*3}s linear infinite`;
+                    b.onclick = (e) => {
+                        const boom = document.createElement('div');
+                        boom.className = 'boom'; boom.innerText = '💥';
+                        boom.style.left = e.clientX + 'px'; boom.style.top = e.clientY + 'px';
+                        document.body.appendChild(boom);
+                        setTimeout(() => boom.remove(), 500);
+
+                        const p = document.getElementById('pop-msg');
+                        p.style.display = 'block';
+                        typeWriter(notes[i], p, 4000, () => { p.style.display = 'none'; });
+                        b.remove();
+                    };
+                    sky.append(b);
+                }, i * 1200);
+            }
+        }
+
+        function spawnEmoji(e) {
+            const ems = ['❤️','💖','🥰','✨','🫶'];
+            const s = document.createElement('span');
+            s.innerText = ems[Math.floor(Math.random()*ems.length)];
+            s.style.position = 'fixed'; s.style.zIndex = '10000';
+            const x = e.clientX || (e.touches && e.touches[0].clientX);
+            const y = e.clientY || (e.touches && e.touches[0].clientY);
+            s.style.left = x+'px'; s.style.top = y+'px';
+            s.animate([{opacity:1, transform:'scale(1)'}, {opacity:0, transform:'translateY(-100px)'}], 1000);
+            document.body.appendChild(s); setTimeout(() => s.remove(), 1000);
+        }
+    </script>
+</body>
+</html>
